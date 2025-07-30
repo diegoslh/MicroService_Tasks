@@ -1,0 +1,90 @@
+## Build artifacts
+bin/
+obj/
+out/
+
+## User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+## Rider
+.idea/
+*.sln.iml
+
+## VS Code
+.vscode/
+
+## Visual Studio
+.vs/
+*.dbmdl
+*.psess
+*.vsp
+*.vspx
+*.ncb
+*.opendb
+*.cache
+*.log
+
+## Dotnet watch/host files
+**/appsettings.*.json.user
+**/appsettings.Development.json.user
+**/*.db
+**/*.pidb
+
+## Logs and diagnostics
+*.log
+*.tlog
+*.svclog
+*.pdb
+*.coverage
+TestResults/
+DumpFiles/
+
+## Local database files
+*.mdf
+*.ldf
+*.ndf
+
+## Secrets
+secrets.json
+
+## Publish outputs
+wwwroot/lib/
+wwwroot/dist/
+publish/
+*.publish.xml
+
+## Package management
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+
+## Dotnet tools
+.dotnet-tools.json
+
+## Environment
+.env
+.env.*
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# JetBrains Rider
+.idea/
+
+# Backup files
+*~ 
+*.bak 
+*.tmp
+*.old
+*.orig
+
+# Others
+.DS_Store
+Thumbs.db
