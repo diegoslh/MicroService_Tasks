@@ -19,6 +19,8 @@ builder.Services.AddScoped<ISqlServerConnection>(provider =>
     new SqlServerConnection(connectionString!)
 );
 builder.Services.AddScoped<ITasksService, TasksService>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 var app = builder.Build();
 
