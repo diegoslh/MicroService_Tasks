@@ -1,0 +1,82 @@
+﻿using Models;
+using Models.DTOs;
+using Repository.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Repository
+{
+    public class TareaRepository(ISqlServerConnection connection) : ITareaRepository
+    {
+        public async Task<IEnumerable<TareaDto>> ObtenerFullPayloadTareas(Dictionary<string, object?> parameters)
+        {
+            var query = @"
+                SELECT 
+	                t.tar_idTareaPk AS Id,
+	                t.tar_titulo AS Titulo,
+	                ISNULL(t.tar_descripcion, 'N/A') AS Descripcion,
+	                FORMAT(t.tar_fechaCreacion, 'yyyy-MM-dd HH:mm') AS FechaCreacion,
+	                FORMAT(t.tar_fechaLimite, 'yyyy-MM-dd HH:mm') AS FechaLimite,
+	                DATEDIFF(DAY, GETDATE(), t.tar_fechaLimite) AS DiasRestantes,
+	                CONCAT(c.col_nombre, ' (', c.col_email, ')') AS Colaborador,
+	                CASE 
+		                WHEN DATEDIFF(DAY, GETDATE(), t.tar_fechaLimite) < 0 THEN 'Vencida'
+		                WHEN DATEDIFF(DAY, GETDATE(), t.tar_fechaLimite) <= 3 THEN 'Urgente'
+		                ELSE 'Normal'
+	                END AS Prioridad,
+	                e.est_nombre AS EstadoTarea,
+	                CASE 
+		                WHEN t.tar_estado = 1 
+			                THEN 'Activa'
+			                ELSE 'Inactiva'
+	                END AS EstadoRegistro
+                FROM Tc_TblTarea t
+                LEFT JOIN Tc_TblColaborador c ON c.col_idColaboradorPk = t.tar_colaboradorFk
+                LEFT JOIN Tc_TblDicEstadoTarea e ON e.est_idEstadoPk = t.tar_estadoFk
+                WHERE (@soloActivas IS NULL OR t.tar_estado = CASE WHEN @soloActivas = 1 THEN 1 ELSE 0 END)
+                ORDER BY t.tar_fechaLimite ASC;
+            ";
+
+            return await connection.ExecuteQuerySqlServerDb<TareaDto>(query, parameters);
+        }
+
+        public async Task<IEnumerable<TareaDto>> ObtenerTareasActivas()
+        {
+            var query = @"
+                SELECT 
+	                t.tar_idTareaPk AS Id,
+	                t.tar_titulo AS Titulo,
+	                ISNULL(t.tar_descripcion, 'N/A') AS Descripcion,
+	                t.tar_fechaCreacion AS FechaCreacion,
+	                t.tar_fechaLimite AS FechaLimite,
+	                c.col_nombre AS Colaborador,
+	                e.est_nombre AS EstadoTarea
+                FROM Tc_TblTarea t
+                LEFT JOIN Tc_TblColaborador c ON c.col_idColaboradorPk = t.tar_colaboradorFk
+                LEFT JOIN Tc_TblDicEstadoTarea e ON e.est_idEstadoPk = t.tar_estadoFk
+                WHERE t.tar_estado = 1
+                ORDER BY t.tar_estadoFk
+            ";
+
+            return await connection.ExecuteQuerySqlServerDb<TareaDto>(query, null);
+        }
+
+        public Task<bool> CrearTarea(TareaDto tarea)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ActualizarTarea(TareaDto tarea)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> InhabilitarTarea(int id)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

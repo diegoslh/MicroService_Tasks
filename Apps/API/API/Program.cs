@@ -18,7 +18,8 @@ var connectionString = builder.Configuration.GetConnectionString("LocalConnectio
 builder.Services.AddScoped<ISqlServerConnection>(provider =>
     new SqlServerConnection(connectionString!)
 );
-builder.Services.AddScoped<ITasksService, TasksService>();
+builder.Services.AddScoped<ITareaRepository, TareaRepository>();
+builder.Services.AddScoped<ITareaService, TareaService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
