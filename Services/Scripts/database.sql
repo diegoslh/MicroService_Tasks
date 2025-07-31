@@ -35,11 +35,11 @@ CREATE TABLE Task_TblDicEstadoTarea (
 -- Tabla: Colaborador
 -- Esta tabla almacena los colaboradores que pueden ser asignados a tareas
 CREATE TABLE Task_TblColaborador (
-    us_idColaboradorPk INT IDENTITY(1,1),
-    us_nombre NVARCHAR(80) NOT NULL,
-    us_email NVARCHAR(70) NOT NULL,
-    us_estado BIT NOT NULL DEFAULT 1,
-    PRIMARY KEY (us_idColaboradorPk),
+    col_idColaboradorPk INT IDENTITY(1,1),
+    col_nombre NVARCHAR(80) NOT NULL,
+    col_email NVARCHAR(70) NOT NULL,
+    col_estado BIT NOT NULL DEFAULT 1,
+    PRIMARY KEY (col_idColaboradorPk),
 );
 
 -- Tabla: Tareas
@@ -55,7 +55,7 @@ CREATE TABLE Task_TblTarea (
     tar_estado BIT NOT NULL DEFAULT 1,
     
     PRIMARY KEY (tar_idTareaPk),
-    FOREIGN KEY (tar_colaboradorFk) REFERENCES Task_TblColaborador(us_idColaboradorPk),
+    FOREIGN KEY (tar_colaboradorFk) REFERENCES Task_TblColaborador(col_idColaboradorPk),
     FOREIGN KEY (tar_estadoFk) REFERENCES Task_TblDicEstadoTarea(est_idEstadoPk)
 );
 
@@ -90,7 +90,7 @@ VALUES
     ('Colaborador', 1);
 
 -- Insertar datos iniciales en la tabla de colaboradores
-INSERT INTO Task_TblColaborador (us_nombre, us_email, us_estado) 
+INSERT INTO Task_TblColaborador (col_nombre, col_email, col_estado) 
 VALUES
     ('Sharit Bedoya', 'sharit.bedoya@example.com', 1),
     ('Victoria Mejia', 'victoria.mejia@example.com', 1),
@@ -108,7 +108,7 @@ VALUES
         'Enviar solicitud de requerimientos papelería',
         'Solicitar a los colaboradores la lista de papelería necesaria para el próximo mes',
         '2025-08-15',
-        (SELECT us_idColaboradorPk FROM Task_TblColaborador WHERE us_nombre = 'Sharit Bedoya'),
+        (SELECT col_idColaboradorPk FROM Task_TblColaborador WHERE col_nombre = 'Sharit Bedoya'),
         (SELECT est_idEstadoPk FROM Task_TblDicEstadoTarea WHERE est_nombre = 'Pendiente'),
         1
     ),
@@ -116,7 +116,7 @@ VALUES
         'Revisar avances del proyecto ERP',
         NULL,
         '2025-08-02',
-        (SELECT us_idColaboradorPk FROM Task_TblColaborador WHERE us_nombre = 'Victoria Mejia'),
+        (SELECT col_idColaboradorPk FROM Task_TblColaborador WHERE col_nombre = 'Victoria Mejia'),
         (SELECT est_idEstadoPk FROM Task_TblDicEstadoTarea WHERE est_nombre = 'En Progreso'),
         1
     ),
@@ -124,7 +124,7 @@ VALUES
         'Finalizar informe de ventas',
         'Elaborar el informe de ventas del segundo trimestre del año 2025',
         '2025-07-30',
-        (SELECT us_idColaboradorPk FROM Task_TblColaborador WHERE us_nombre = 'Manuel Narvaez'),
+        (SELECT col_idColaboradorPk FROM Task_TblColaborador WHERE col_nombre = 'Manuel Narvaez'),
         (SELECT est_idEstadoPk FROM Task_TblDicEstadoTarea WHERE est_nombre = 'Completada'),
         1
     );
