@@ -1,6 +1,7 @@
 ﻿using API.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using Models.DTOs;
 using Repository.Interfaces;
 using Services;
@@ -23,6 +24,27 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 return ErrorHelper.BuildInternalError(ex, "✖️ Error al obtener los tareas.", HttpContext);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CrearTarea([FromBody] TblTarea nuevaTarea)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                await tareaService.CrearTareaAsync(nuevaTarea);
+                return StatusCode(201, "Tarea creada exitosamente.");
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return ErrorHelper.BuildInternalError(ex, "✖️ Ocurrió un error al crear la tarea.", HttpContext);
             }
         }
 

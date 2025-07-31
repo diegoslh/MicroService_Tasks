@@ -12,7 +12,7 @@ namespace Repository.Interfaces
     {
         Task<IEnumerable<TareaDto>> ObtenerTareasActivas();
         Task<IEnumerable<TareaDto>> ObtenerFullPayloadTareas(Dictionary<string, object?> parameters);
-        Task<bool> CrearTarea(TareaDto tarea);
+        Task CrearTareaAsync(TblTarea tarea);
         Task<bool> ActualizarTarea(TareaDto tarea);
         Task<bool> InhabilitarTarea(int id);
     }

@@ -1,4 +1,5 @@
-﻿using Models.DTOs;
+﻿using Models;
+using Models.DTOs;
 using Repository;
 using Repository.Interfaces;
 using Services.Interfaces;
@@ -34,5 +35,27 @@ namespace Services
                 return await tareaRepository.ObtenerTareasActivas();
             }
         }
+
+        public async Task CrearTareaAsync(TblTarea nuevaTarea)
+        {
+            // Validaciones lógicas adicionales a las que tiene el Modelo TblTarea
+            if (string.IsNullOrWhiteSpace(nuevaTarea.Titulo))
+                throw new ArgumentException("El título no puede estar vacío.");
+
+            if (nuevaTarea.FechaCreacion < DateTime.Now)
+                throw new ArgumentException("La fecha de creación no puede ser menor al día actual.");
+
+            if (nuevaTarea.FechaLimite.Date <= nuevaTarea.FechaCreacion.Date)
+                throw new ArgumentException("La fecha límite debe ser al menos un día después de la fecha de creación.");
+
+            if (nuevaTarea.ColaboradorFk <= 0)
+                throw new ArgumentException("ID de colaborador inválido.");
+
+            if (nuevaTarea.EstadoTareaFk <= 0)
+                throw new ArgumentException("ID de estado de tarea inválido.");
+
+            await tareaRepository.CrearTareaAsync(nuevaTarea);
+        }
+
     }
 }

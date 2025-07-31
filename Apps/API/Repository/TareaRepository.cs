@@ -64,9 +64,43 @@ namespace Repository
             return await connection.ExecuteQuerySqlServerDb<TareaDto>(query, null);
         }
 
-        public Task<bool> CrearTarea(TareaDto tarea)
+        public async Task CrearTareaAsync(TblTarea tarea)
         {
-            throw new NotImplementedException();
+
+            var query = @"
+                INSERT INTO Tc_TblTarea (
+                    tar_titulo,
+                    tar_descripcion,
+                    tar_fechaCreacion,
+                    tar_fechaLimite,
+                    tar_colaboradorFk,
+                    tar_estadoFk,
+                    tar_estado
+                )
+                VALUES (
+                    @Titulo,
+                    @Descripcion,
+                    @FechaCreacion,
+                    @FechaLimite,
+                    @ColaboradorFk,
+                    @EstadoTareaFk,
+                    @Estado
+                );
+            ";
+
+            var parametros = new Dictionary<string, object?>
+            {
+                { "@Titulo", tarea.Titulo },
+                { "@Descripcion", tarea.Descripcion ?? (object)DBNull.Value },
+                { "@FechaCreacion", tarea.FechaCreacion },
+                { "@FechaLimite", tarea.FechaLimite },
+                { "@ColaboradorFk", tarea.ColaboradorFk },
+                { "@EstadoTareaFk", tarea.EstadoTareaFk },
+                { "@Estado", tarea.Estado }
+            };
+
+            await connection.ExecuteNonQuerySqlServerDb(query, parametros);
+
         }
 
         public Task<bool> ActualizarTarea(TareaDto tarea)
