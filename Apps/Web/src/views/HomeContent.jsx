@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { API_URL } from '../../config.js';
+import ModalCrearTarea from '../components/ModalCrearTarea.jsx';
 
 function HomeContent() {
   const [tareas, setTareas] = useState([]);
@@ -15,7 +16,8 @@ function HomeContent() {
         return response.json();
       })
       .then(data => {
-        setTareas(data);
+        // setTareas(data);
+        setTareas(data.sort((a, b) => b.id - a.id));
         setLoading(false);
       })
       .catch(err => {
@@ -27,7 +29,10 @@ function HomeContent() {
 
   return (
     <div className="container mt-4">
-      <h2 className="text-center mb-4">Tareas Colaboradores</h2>
+      <h2 className="text-center mb-4">Balance Tareas Colaboradores</h2>
+        <div className="d-flex justify-content-end mb-3">
+          <ModalCrearTarea idModal="modalCrearTarea" />
+        </div>
 
       {loading && <div className="alert alert-info">Cargando tareas...</div>}
       {error && <div className="alert alert-danger">{error}</div>}
