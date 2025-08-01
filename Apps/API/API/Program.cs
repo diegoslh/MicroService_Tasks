@@ -22,6 +22,9 @@ builder.Services.AddScoped<ITareaRepository, TareaRepository>();
 builder.Services.AddScoped<ITareaService, TareaService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IEstadoTareaRepository, EstadoTareaRepository>();
+builder.Services.AddScoped<IEstadoTareaService, EstadoTareaService>();
+
 
 var app = builder.Build();
 
