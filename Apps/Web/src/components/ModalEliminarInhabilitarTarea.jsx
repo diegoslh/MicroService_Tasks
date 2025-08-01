@@ -2,13 +2,14 @@ import React from "react";
 import { API_URL } from "../../config.js";
 
 function ModalEliminarInhabilitarTarea({ tareaId, onUpdated }) {
+  const token = localStorage.getItem("JWT_TOKEN");
   const modalId = "modalEliminarInhabilitar";
 
   const handleInhabilitar = async () => {
     try {
       const res = await fetch(`${API_URL}/Tarea/${tareaId}/estado`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify(false),
       });
 
@@ -32,6 +33,7 @@ function ModalEliminarInhabilitarTarea({ tareaId, onUpdated }) {
     try {
       const res = await fetch(`${API_URL}/Tarea/${tareaId}`, {
         method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}` },
       });
 
       if (!res.ok) {

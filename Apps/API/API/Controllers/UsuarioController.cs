@@ -1,4 +1,5 @@
 ﻿using API.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
@@ -9,6 +10,7 @@ namespace API.Controllers
     [ApiController]
     public class UsuarioController(IUsuarioService usuarioService) : ControllerBase
     {
+        [Authorize]
         [HttpGet("Colaboradores")]
         public async Task<IActionResult> ObtenerColaboradores()
         {
@@ -29,19 +31,33 @@ namespace API.Controllers
             try
             {
                 var usuarioInfo = await usuarioService.VerificarCredencialesUsuario(usuario, clave);
-                
+
                 if (usuarioInfo == null)
                 {
-                    return Unauthorized(new { mensaje = "⛔ Credenciales inválidas" });
+                    return Unauthorized(new
+                    {
+                        success = false,
+                        message = "⛔ Credenciales inválidas",
+                        data = (object?)null
+                    });
                 }
 
-                return Ok(new { mensaje = "✅ Usuario autenticado correctamente!" });
+                return Ok(new
+                {
+                    success = true,
+                    message = "✅ Usuario autenticado correctamente",
+                    data = new
+                    {
+                        alias = usuarioInfo.Alias,
+                        rol = usuarioInfo.Rol,
+                        token = usuarioInfo.JwtToken
+                    }
+                });
             }
             catch (Exception ex)
             {
                 return ErrorHelper.BuildInternalError(ex, "✖️ Error al autenticar el usuario.", HttpContext);
             }
         }
-
     }
 }

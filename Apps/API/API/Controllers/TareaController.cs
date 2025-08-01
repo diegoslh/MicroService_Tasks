@@ -1,4 +1,5 @@
 ﻿using API.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -26,7 +27,7 @@ namespace API.Controllers
                 return ErrorHelper.BuildInternalError(ex, "✖️ Error al obtener los tareas.", HttpContext);
             }
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CrearTarea([FromBody] TblTarea nuevaTarea)
         {
@@ -48,6 +49,7 @@ namespace API.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarTarea(int id, [FromBody] TblTarea tareaActualizada)
         {
@@ -73,6 +75,7 @@ namespace API.Controllers
             }
         }
 
+        [Authorize]
         [HttpPatch("{id}/estado")]
         public async Task<IActionResult> CambiarEstado(int id, [FromBody] bool nuevoEstado)
         {
@@ -91,6 +94,7 @@ namespace API.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarTarea(int id)
         {

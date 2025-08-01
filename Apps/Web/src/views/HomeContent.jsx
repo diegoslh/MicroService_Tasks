@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { API_URL } from "../../config.js";
 import ModalCrearTarea from "../components/ModalCrearTarea.jsx";
 import ModalEditarTarea from "../components/ModalEditarTarea.jsx";
 import ModalEliminarInhabilitarTarea from "../components/ModalEliminarInhabilitarTarea.jsx";
 import DeleteIcon from "../assets/icons/delete.png";
+import ModalLogin from "../components/ModalLogin.jsx";
 
 function HomeContent() {
   const [tareas, setTareas] = useState([]);
@@ -11,6 +12,7 @@ function HomeContent() {
   const [error, setError] = useState(null);
   const [cargarTareas, setCargarTareas] = useState(false);
   const [tareaSeleccionadaId, setTareaSeleccionadaId] = useState(null);
+  const token = localStorage.getItem("JWT_TOKEN");
 
   useEffect(() => {
     fetch(`${API_URL}/Tarea?fullPayload=true`)
@@ -34,12 +36,31 @@ function HomeContent() {
 
   return (
     <div className="container mt-4">
-      <h2 className="text-center mb-4">Balance Tareas Colaboradores</h2>
+      <span className="" style={{ color: token ? "green" : "red" }}>
+        {token
+          ? `Hola👋, ${localStorage.getItem("ALIAS").toUpperCase()}`
+          : "🔔 Bienvenido, Por favor inicia sesión para habilitar las acciones"}
+      </span>
+      <h2 className="text-center mb-4">Tareas Colaboradores</h2>
       <div className="d-flex justify-content-end mb-3">
         <ModalCrearTarea
           idModal="modalCrearTarea"
           onUpdated={() => setCargarTareas(!cargarTareas)}
         />
+        {!token ? (
+          <ModalLogin />
+        ) : (
+          <button
+            className="btn btn-secondary"
+            onClick={() => {
+              localStorage.removeItem("JWT_TOKEN");
+              localStorage.removeItem("ALIAS");
+              window.location.reload();
+            }}
+          >
+            Cerrar Sesión
+          </button>
+        )}
       </div>
 
       {loading && <div className="alert alert-info">Cargando tareas...</div>}
@@ -96,6 +117,7 @@ function HomeContent() {
                         title="Eliminar/Inhabilitar Registro"
                         data-bs-target="#modalEliminarInhabilitar"
                         onClick={() => setTareaSeleccionadaId(tarea.id)}
+                        disabled={!token}
                       >
                         <img src={DeleteIcon} alt="Eliminar" width="20" />
                       </button>
