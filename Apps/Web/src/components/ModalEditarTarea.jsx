@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { API_URL } from "../../config.js";
 
-function ModalCrearTarea({ idModal, onUpdated }) {
+function ModalEditarTarea({ tarea, onUpdated }) {
   const [formData, setFormData] = useState({
     titulo: "",
     descripcion: null,
@@ -11,11 +11,37 @@ function ModalCrearTarea({ idModal, onUpdated }) {
   });
 
   const [colaboradores, setColaboradores] = useState([]);
-  const [estadoCargado, setEstadoCargado] = useState(false);
+  const [estados, setEstados] = useState([]);
+
+  // ID único para cada modal
+  const modalId = `modalEditarTarea-${tarea.id}`;
+
+  useEffect(() => {
+    if (tarea?.id) {
+      setFormData({
+        titulo: tarea.titulo || "",
+        descripcion: tarea.descripcion || "",
+        fechaLimite: tarea.fechaLimite?.split("T")[0] || "",
+        colaboradorFk: tarea.colaboradorFk || "",
+        estadoTareaFk: tarea.estadoTareaFk || "",
+      });
+
+      // Cargar colaboradores
+      fetch(`${API_URL}/Usuario/Colaboradores`)
+        .then((res) => res.json())
+        .then(setColaboradores)
+        .catch((err) => console.error("Error cargando colaboradores", err));
+
+      // Cargar estados
+      fetch(`${API_URL}/EstadosTarea`)
+        .then((res) => res.json())
+        .then(setEstados)
+        .catch((err) => console.error("Error cargando estados", err));
+    }
+  }, [tarea]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -25,28 +51,20 @@ function ModalCrearTarea({ idModal, onUpdated }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.titulo || !formData.fechaLimite || !formData.colaboradorFk) {
-      alert("Por favor completa todos los campos obligatorios");
-      return;
-    }
-
     const payload = {
       titulo: formData.titulo,
       descripcion: formData.descripcion,
-      fechaCreacion: new Date().toISOString(),
+      fechaCreacion: tarea.fechaCreacion,
       fechaLimite: new Date(formData.fechaLimite).toISOString(),
       colaboradorFk: parseInt(formData.colaboradorFk),
       estadoTareaFk: parseInt(formData.estadoTareaFk),
-      estado: true,
+      estado: tarea.estado,
     };
-    console.log("Payload:", payload);
 
     try {
-      const res = await fetch(`${API_URL}/Tarea`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const res = await fetch(`${API_URL}/Tarea/${tarea.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
@@ -58,57 +76,30 @@ function ModalCrearTarea({ idModal, onUpdated }) {
         );
       }
 
-      alert("✅ ¡Tarea creada exitosamente!");
-      document.getElementById(idModal).querySelector("form").reset();
+      alert("✅ ¡Tarea actualizada!");
+      document.getElementById(modalId).querySelector("form").reset();
       if (onUpdated) onUpdated();
     } catch (error) {
-      alert(error || "❌ Error al crear la tarea");
-    }
-  };
-
-  const cargarDatosModal = async () => {
-    try {
-      // Cargar colaboradores
-      const colabRes = await fetch(`${API_URL}/Usuario/Colaboradores`);
-      const colabData = await colabRes.json();
-      setColaboradores(colabData);
-
-      // Cargar estado "Pendiente"
-      const estadoRes = await fetch(`${API_URL}/EstadosTarea`);
-      const estadoData = await estadoRes.json();
-      const pendiente = estadoData.find(
-        (e) => e.estadoTarea.toLowerCase() === "pendiente"
-      );
-
-      if (pendiente) {
-        setFormData((prev) => ({
-          ...prev,
-          estadoTareaFk: pendiente.id,
-        }));
-        setEstadoCargado(true);
-      }
-    } catch (error) {
-      console.error("Error cargando datos del modal:", error);
+      console.error(error);
+      alert(error || "❌ Error al actualizar la tarea");
     }
   };
 
   return (
     <>
       <button
-        className="btn btn-primary"
-        type="button"
+        className="btn btn-warning"
         data-bs-toggle="modal"
-        data-bs-target={`#${idModal}`}
-        onClick={cargarDatosModal}
+        data-bs-target={`#${modalId}`}
       >
-        <h5 className="mb-0">Agregar Tarea</h5>
+        Editar
       </button>
 
-      <article className="modal fade" tabIndex="-1" id={idModal}>
+      <article className="modal fade" id={modalId} tabIndex="-1">
         <div className="modal-dialog">
           <form className="modal-content" onSubmit={handleSubmit}>
             <header className="modal-header">
-              <h4 className="modal-title w-100 text-center">Agregar Tarea</h4>
+              <h4 className="modal-title w-100 text-center">Editar Tarea</h4>
             </header>
 
             <section className="modal-body">
@@ -119,9 +110,10 @@ function ModalCrearTarea({ idModal, onUpdated }) {
                 <input
                   type="text"
                   name="titulo"
-                  maxLength="100"
                   className="form-control"
+                  value={formData.titulo}
                   onChange={handleChange}
+                  maxLength="100"
                   required
                 />
               </div>
@@ -132,6 +124,7 @@ function ModalCrearTarea({ idModal, onUpdated }) {
                   name="descripcion"
                   className="form-control"
                   rows="2"
+                  value={formData.descripcion}
                   onChange={handleChange}
                 ></textarea>
               </div>
@@ -141,7 +134,13 @@ function ModalCrearTarea({ idModal, onUpdated }) {
                 <input
                   type="text"
                   className="form-control"
-                  value={new Date().toLocaleDateString("es-ES")}
+                  value={
+                    tarea.fechaCreacion
+                      ? new Date(tarea.fechaCreacion).toLocaleDateString(
+                          "es-ES"
+                        )
+                      : ""
+                  }
                   disabled
                   readOnly
                 />
@@ -155,6 +154,7 @@ function ModalCrearTarea({ idModal, onUpdated }) {
                   type="date"
                   name="fechaLimite"
                   className="form-control"
+                  value={formData.fechaLimite}
                   onChange={handleChange}
                   required
                 />
@@ -167,29 +167,41 @@ function ModalCrearTarea({ idModal, onUpdated }) {
                 <select
                   name="colaboradorFk"
                   className="form-select"
+                  value={formData.colaboradorFk}
                   onChange={handleChange}
                   required
                 >
                   <option value="" hidden>
                     Seleccione un colaborador
                   </option>
-                  {colaboradores.map((col) => (
-                    <option key={col.id} value={col.id}>
-                      {col.nombre}
+                  {colaboradores.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.nombre}
                     </option>
                   ))}
                 </select>
               </div>
 
-              <div className="mb-0">
-                <label className="form-label">Estado de Tarea</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value="Pendiente"
-                  disabled
-                  readOnly
-                />
+              <div className="mb-3">
+                <label className="form-label">
+                  Estado de Tarea <code>*</code>
+                </label>
+                <select
+                  name="estadoTareaFk"
+                  className="form-select"
+                  value={formData.estadoTareaFk}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" hidden>
+                    Seleccione un estado
+                  </option>
+                  {estados.map((e) => (
+                    <option key={e.id} value={e.id}>
+                      {e.estadoTarea}
+                    </option>
+                  ))}
+                </select>
               </div>
             </section>
 
@@ -201,12 +213,8 @@ function ModalCrearTarea({ idModal, onUpdated }) {
               >
                 Cancelar
               </button>
-              <button
-                type="submit"
-                className="btn btn-success"
-                disabled={!estadoCargado}
-              >
-                Crear Tarea
+              <button type="submit" className="btn btn-success">
+                Actualizar
               </button>
             </footer>
           </form>
@@ -216,4 +224,4 @@ function ModalCrearTarea({ idModal, onUpdated }) {
   );
 }
 
-export default ModalCrearTarea;
+export default ModalEditarTarea;
