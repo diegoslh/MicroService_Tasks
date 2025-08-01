@@ -106,21 +106,25 @@ function HomeContent() {
                   <td>{tarea.estadoTarea}</td>
                   <td>{tarea.estadoRegistro}</td>
                   <td>
-                    <ModalEditarTarea
-                      tarea={tarea}
-                      onUpdated={() => setCargarTareas(!cargarTareas)}
-                    />
-                    {tarea.estadoRegistro === "Activa" && (
-                      <button
-                        className="btn btn-danger-outline"
-                        data-bs-toggle="modal"
-                        title="Eliminar/Inhabilitar Registro"
-                        data-bs-target="#modalEliminarInhabilitar"
-                        onClick={() => setTareaSeleccionadaId(tarea.id)}
-                        disabled={!token}
-                      >
-                        <img src={DeleteIcon} alt="Eliminar" width="20" />
-                      </button>
+                    {tarea.estadoRegistro === "Activa" ? (
+                      <>
+                        <ModalEditarTarea
+                          tarea={tarea}
+                          onUpdated={() => setCargarTareas(!cargarTareas)}
+                        />
+                        <button
+                          className="btn btn-danger-outline"
+                          data-bs-toggle="modal"
+                          title="Eliminar/Inhabilitar Registro"
+                          data-bs-target="#modalEliminarInhabilitar"
+                          onClick={() => setTareaSeleccionadaId(tarea.id)}
+                          disabled={!token}
+                        >
+                          <img src={DeleteIcon} alt="Eliminar" width="20" />
+                        </button>
+                      </>
+                    ) : (
+                      <span className="text-muted text-center">✖️</span>
                     )}
                   </td>
                 </tr>
