@@ -89,16 +89,38 @@ namespace Services
         private static void ValidarCamposTblTarea(TblTarea tarea, string accion)
         {
             // Validaciones adicionales a las que tiene el Modelo TblTarea
+            var hoy = DateTime.Now.Date;
+            var fechaCreacion = tarea.FechaCreacion.Date;
+            var fechaLimite = tarea.FechaLimite.Date;
+
             if (string.IsNullOrWhiteSpace(tarea.Titulo))
                 throw new ArgumentException("El título no puede estar vacío.");
 
-            var validarFechaCreacion = accion == "crear" ? (tarea.FechaCreacion < DateTime.Now) : false;
-            if (validarFechaCreacion)
-                throw new ArgumentException("La fecha de creación no puede ser menor al día actual.");
+            if (accion == "crear")
+            {
+                if (fechaCreacion < hoy)
+                    throw new ArgumentException("La fecha de creación no puede ser anterior al día de hoy.");
 
-            var validacionFechaLimite = accion == "actualizar" ? (tarea.FechaLimite.Date < DateTime.Now) : (tarea.FechaLimite.Date <= tarea.FechaCreacion.Date);
-            if (validacionFechaLimite)
-                throw new ArgumentException("La fecha límite debe ser al menos un día después de la fecha de creación.");
+                if (fechaLimite == fechaCreacion)
+                    throw new ArgumentException("La fecha límite no puede ser el mismo día de la creación. Debe ser al menos al día siguiente.");
+
+                if (fechaLimite < fechaCreacion)
+                    throw new ArgumentException("La fecha límite debe ser posterior a la fecha de creación.");
+
+                if ((fechaLimite - fechaCreacion).Days > 30)
+                    throw new ArgumentException("La fecha límite no puede exceder los 30 días desde la fecha de creación.");
+            }
+            else if (accion == "actualizar")
+            {
+                if (fechaLimite < hoy)
+                    throw new ArgumentException("La fecha límite no puede ser anterior al día de hoy.");
+
+                if (fechaLimite <= fechaCreacion)
+                    throw new ArgumentException("La fecha límite debe ser posterior a la fecha de creación.");
+
+                if ((fechaLimite - hoy).Days > 30)
+                    throw new ArgumentException("La fecha límite no puede exceder los 30 días desde la fecha actual.");
+            }
 
             if (tarea.ColaboradorFk <= 0)
                 throw new ArgumentException("ID de colaborador inválido.");
