@@ -1,3 +1,4 @@
+import { API_URL } from "../../config.js";
 import { useState } from "react";
 
 function ModalLogin() {
@@ -19,7 +20,7 @@ function ModalLogin() {
     const { usuario, clave } = formData;
 
     try {
-      const res = await fetch(`https://localhost:44357/api/v1/Usuario/Autenticar?usuario=${encodeURIComponent(usuario)}&clave=${encodeURIComponent(clave)}`, {
+      const res = await fetch(`${API_URL}/Usuario/Autenticar?usuario=${encodeURIComponent(usuario)}&clave=${encodeURIComponent(clave)}`, {
         method: "POST",
         headers: {
           "Accept": "*/*",

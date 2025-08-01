@@ -1,0 +1,49 @@
+services:
+  db:
+    container_name: BdTareasColaborador
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "Temporal1**"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1435:1433"
+    networks:
+      - TareasColaboradorNetwork
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+
+  api:
+    container_name: ApiTareasColaborador
+    build:
+      context: ./Apps/API
+      dockerfile: Dockerfile
+    ports:
+      - "44357:8080"
+    environment:
+      # - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Development
+      # - ConnectionStrings__LocalConnection=Server=db;Database=DB_TareasColaboradores;User Id=sa;Password=Temporal1**;TrustServerCertificate=True;
+    depends_on:
+      - db
+    networks:
+      - TareasColaboradorNetwork
+    entrypoint: ["dotnet", "API.dll"]
+
+  web:
+    container_name: WebTareasColaborador
+    build:
+      context: ./Apps/Web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - TareasColaboradorNetwork
+
+networks:
+  TareasColaboradorNetwork:
+    driver: bridge
+
+volumes:
+  sqlserver_data:

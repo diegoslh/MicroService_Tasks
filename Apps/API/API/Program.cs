@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure services for the application.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+// console.WriteLine("🟢 Swagger is running at: http://localhost:44357/swagger/index.html");
 
 // Configuration to allow Authorizacion Header in Swagger
 builder.Services.AddSwaggerGen(options =>
@@ -40,7 +41,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Configure the connection string for SQL Server
-var connectionString = builder.Configuration.GetConnectionString("LocalConnection");
+var connectionString = builder.Configuration.GetConnectionString("DockerConnection");
 builder.Services.AddScoped<ISqlServerConnection>(provider =>
     new SqlServerConnection(connectionString!)
 );
