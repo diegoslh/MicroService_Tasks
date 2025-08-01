@@ -9,13 +9,13 @@ namespace API.Controllers
     [ApiController]
     public class UsuarioController(IUsuarioService usuarioService) : ControllerBase
     {
-        [HttpGet("ObtenerColaboradores")]
+        [HttpGet("Colaboradores")]
         public async Task<IActionResult> ObtenerColaboradores()
         {
             try
             {
                 var colaboradores = await usuarioService.ObtenerColaboradoresAsync();
-                return Ok(colaboradores); // StatusCode 200
+                return Ok(colaboradores);
             }
             catch (Exception ex)
             {
@@ -23,7 +23,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("AutenticarUsuario")]
+        [HttpPost("Autenticar")]
         public async Task<IActionResult> AutenticarUsuario(string usuario, string clave)
         {
             try
@@ -32,10 +32,10 @@ namespace API.Controllers
                 
                 if (usuarioInfo == null)
                 {
-                    return Unauthorized(new { message = "⛔ Credenciales inválidas" }); // StatusCode 401
+                    return Unauthorized(new { message = "⛔ Credenciales inválidas" });
                 }
 
-                return Ok(new { message = "✅ Usuario autenticado correctamente!" }); // StatusCode 200
+                return Ok(new { message = "✅ Usuario autenticado correctamente!" });
             }
             catch (Exception ex)
             {
