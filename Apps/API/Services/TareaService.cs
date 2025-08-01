@@ -39,7 +39,7 @@ namespace Services
         public async Task CrearTareaAsync(TblTarea nuevaTarea)
         {
             // Validaciones adicionales
-            ValidarCamposTblTarea(nuevaTarea);
+            ValidarCamposTblTarea(nuevaTarea, "crear");
 
             // Crear tarea
             await tareaRepository.CrearTareaAsync(nuevaTarea);
@@ -48,7 +48,7 @@ namespace Services
         public async Task<bool> ActualizarTareaAsync(int id, TblTarea tareaActualizada)
         {
             // Validaciones adicionales
-            ValidarCamposTblTarea(tareaActualizada);
+            ValidarCamposTblTarea(tareaActualizada, "actualizar");
 
             // Confirmar existencia
             var existe = await tareaRepository.ExisteTareaAsync(id);
@@ -86,16 +86,18 @@ namespace Services
 
 
         #region Private Methods
-        private static void ValidarCamposTblTarea(TblTarea tarea)
+        private static void ValidarCamposTblTarea(TblTarea tarea, string accion)
         {
             // Validaciones adicionales a las que tiene el Modelo TblTarea
             if (string.IsNullOrWhiteSpace(tarea.Titulo))
                 throw new ArgumentException("El título no puede estar vacío.");
 
-            if (tarea.FechaCreacion < DateTime.Now)
+            var validarFechaCreacion = accion == "crear" ? (tarea.FechaCreacion < DateTime.Now) : false;
+            if (validarFechaCreacion)
                 throw new ArgumentException("La fecha de creación no puede ser menor al día actual.");
 
-            if (tarea.FechaLimite.Date <= tarea.FechaCreacion.Date)
+            var validacionFechaLimite = accion == "actualizar" ? (tarea.FechaLimite.Date < DateTime.Now) : (tarea.FechaLimite.Date <= tarea.FechaCreacion.Date);
+            if (validacionFechaLimite)
                 throw new ArgumentException("La fecha límite debe ser al menos un día después de la fecha de creación.");
 
             if (tarea.ColaboradorFk <= 0)

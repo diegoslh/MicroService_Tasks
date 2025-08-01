@@ -19,7 +19,7 @@ namespace API.Controllers
             try
             {
                 var tareas = await tareaService.ObtenerTareas(fullPayload, estado);
-                return Ok(tareas); // StatusCode 200
+                return Ok(tareas);
             }
             catch (Exception ex)
             {
@@ -40,7 +40,7 @@ namespace API.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { mensaje = ex.Message });
             }
             catch (Exception ex)
             {

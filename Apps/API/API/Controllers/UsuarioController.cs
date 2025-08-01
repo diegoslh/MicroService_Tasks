@@ -32,10 +32,10 @@ namespace API.Controllers
                 
                 if (usuarioInfo == null)
                 {
-                    return Unauthorized(new { message = "⛔ Credenciales inválidas" });
+                    return Unauthorized(new { mensaje = "⛔ Credenciales inválidas" });
                 }
 
-                return Ok(new { message = "✅ Usuario autenticado correctamente!" });
+                return Ok(new { mensaje = "✅ Usuario autenticado correctamente!" });
             }
             catch (Exception ex)
             {

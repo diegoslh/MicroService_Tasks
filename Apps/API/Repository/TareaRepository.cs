@@ -21,12 +21,14 @@ namespace Repository
 	                FORMAT(t.tar_fechaCreacion, 'yyyy-MM-dd HH:mm') AS FechaCreacion,
 	                FORMAT(t.tar_fechaLimite, 'yyyy-MM-dd HH:mm') AS FechaLimite,
 	                DATEDIFF(DAY, GETDATE(), t.tar_fechaLimite) AS DiasRestantes,
+	                t.tar_colaboradorFk AS ColaboradorFk,
 	                CONCAT(c.col_nombre, ' (', c.col_email, ')') AS Colaborador,
 	                CASE 
 		                WHEN DATEDIFF(DAY, GETDATE(), t.tar_fechaLimite) < 0 THEN 'Vencida'
 		                WHEN DATEDIFF(DAY, GETDATE(), t.tar_fechaLimite) <= 3 THEN 'Urgente'
 		                ELSE 'Normal'
 	                END AS Prioridad,
+	                t.tar_estadoFk AS EstadoTareaFk,
 	                e.est_nombre AS EstadoTarea,
 	                CASE 
 		                WHEN t.tar_estado = 1 
@@ -37,7 +39,7 @@ namespace Repository
                 LEFT JOIN Tc_TblColaborador c ON c.col_idColaboradorPk = t.tar_colaboradorFk
                 LEFT JOIN Tc_TblDicEstadoTarea e ON e.est_idEstadoPk = t.tar_estadoFk
                 WHERE (@soloActivas IS NULL OR t.tar_estado = CASE WHEN @soloActivas = 1 THEN 1 ELSE 0 END)
-                ORDER BY t.tar_fechaLimite ASC;
+                ORDER BY t.tar_idTareaPk DESC;
             ";
 
             return await connection.ExecuteQuerySqlServerDb<TareaDto>(query, parametros);

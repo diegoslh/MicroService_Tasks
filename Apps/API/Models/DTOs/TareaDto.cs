@@ -15,8 +15,10 @@ namespace Models.DTOs
         public DateTime? FechaCreacion { get; set; }
         public DateTime FechaLimite { get; set; }
         public int? DiasRestantes { get; set; }
+        public int ColaboradorFk { get; set; }
         public string Colaborador { get; set; }
         public string? Prioridad { get; set; }
+        public int EstadoTareaFk { get; set; }
         public string EstadoTarea { get; set; }
         public string? EstadoRegistro { get; set; }
     }
