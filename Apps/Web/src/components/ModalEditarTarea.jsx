@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { API_URL } from "../../config.js";
+import EditIcon from "../assets/icons/modify.png";
+
 
 function ModalEditarTarea({ tarea, onUpdated }) {
   const [formData, setFormData] = useState({
@@ -88,11 +90,12 @@ function ModalEditarTarea({ tarea, onUpdated }) {
   return (
     <>
       <button
-        className="btn btn-warning"
+        className="btn btn-success-outline"
         data-bs-toggle="modal"
         data-bs-target={`#${modalId}`}
+        title="Editar Registro"
       >
-        Editar
+        <img src={EditIcon} alt="Editar" width="20" height="20" />
       </button>
 
       <article className="modal fade" id={modalId} tabIndex="-1">

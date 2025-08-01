@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { API_URL } from "../../config.js";
 import ModalCrearTarea from "../components/ModalCrearTarea.jsx";
 import ModalEditarTarea from "../components/ModalEditarTarea.jsx";
+import ModalEliminarInhabilitarTarea from "../components/ModalEliminarInhabilitarTarea.jsx";
+import DeleteIcon from "../assets/icons/delete.png";
 
 function HomeContent() {
   const [tareas, setTareas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cargarTareas, setCargarTareas] = useState(false);
+  const [tareaSeleccionadaId, setTareaSeleccionadaId] = useState(null);
 
   useEffect(() => {
     fetch(`${API_URL}/Tarea?fullPayload=true`)
@@ -33,7 +36,10 @@ function HomeContent() {
     <div className="container mt-4">
       <h2 className="text-center mb-4">Balance Tareas Colaboradores</h2>
       <div className="d-flex justify-content-end mb-3">
-        <ModalCrearTarea idModal="modalCrearTarea" onUpdated={() => setCargarTareas(!cargarTareas)}/>
+        <ModalCrearTarea
+          idModal="modalCrearTarea"
+          onUpdated={() => setCargarTareas(!cargarTareas)}
+        />
       </div>
 
       {loading && <div className="alert alert-info">Cargando tareas...</div>}
@@ -79,10 +85,28 @@ function HomeContent() {
                   <td>{tarea.estadoTarea}</td>
                   <td>{tarea.estadoRegistro}</td>
                   <td>
-                    <ModalEditarTarea tarea={tarea} onUpdated={() => setCargarTareas(!cargarTareas)} />
+                    <ModalEditarTarea
+                      tarea={tarea}
+                      onUpdated={() => setCargarTareas(!cargarTareas)}
+                    />
+                    {tarea.estadoRegistro === "Activa" && (
+                      <button
+                        className="btn btn-danger-outline"
+                        data-bs-toggle="modal"
+                        title="Eliminar/Inhabilitar Registro"
+                        data-bs-target="#modalEliminarInhabilitar"
+                        onClick={() => setTareaSeleccionadaId(tarea.id)}
+                      >
+                        <img src={DeleteIcon} alt="Eliminar" width="20" />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
+              <ModalEliminarInhabilitarTarea
+                tareaId={tareaSeleccionadaId}
+                onUpdated={() => setCargarTareas(!cargarTareas)}
+              />
             </tbody>
           </table>
         </div>
