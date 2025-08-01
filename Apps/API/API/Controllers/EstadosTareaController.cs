@@ -1,10 +1,12 @@
 ﻿using API.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 
 namespace API.Controllers
 {
+    [Authorize]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class EstadosTareaController(IEstadoTareaService estadoTareaService) : ControllerBase

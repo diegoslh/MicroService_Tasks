@@ -2,6 +2,8 @@ import { useState } from "react";
 import { API_URL } from "../../config.js";
 
 function ModalCrearTarea({ idModal, onUpdated }) {
+  const token = localStorage.getItem("JWT_TOKEN");
+  
   const [formData, setFormData] = useState({
     titulo: "",
     descripcion: null,
@@ -46,6 +48,7 @@ function ModalCrearTarea({ idModal, onUpdated }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(payload),
       });
@@ -67,14 +70,20 @@ function ModalCrearTarea({ idModal, onUpdated }) {
   };
 
   const cargarDatosModal = async () => {
+    const token = localStorage.getItem("JWT_TOKEN");
+
+    const headers = {
+      "Authorization": `Bearer ${token}`,
+      "Accept": "application/json",
+    };
     try {
       // Cargar colaboradores
-      const colabRes = await fetch(`${API_URL}/Usuario/Colaboradores`);
+      const colabRes = await fetch(`${API_URL}/Usuario/Colaboradores`, { headers });
       const colabData = await colabRes.json();
       setColaboradores(colabData);
 
       // Cargar estado "Pendiente"
-      const estadoRes = await fetch(`${API_URL}/EstadosTarea`);
+      const estadoRes = await fetch(`${API_URL}/EstadosTarea`, { headers });
       const estadoData = await estadoRes.json();
       const pendiente = estadoData.find(
         (e) => e.estadoTarea.toLowerCase() === "pendiente"
@@ -95,11 +104,12 @@ function ModalCrearTarea({ idModal, onUpdated }) {
   return (
     <>
       <button
-        className="btn btn-primary"
+        className="btn btn-primary me-3"
         type="button"
         data-bs-toggle="modal"
         data-bs-target={`#${idModal}`}
         onClick={cargarDatosModal}
+        disabled={!token}
       >
         <h5 className="mb-0">Agregar Tarea</h5>
       </button>

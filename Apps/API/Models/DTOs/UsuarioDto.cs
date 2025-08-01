@@ -12,6 +12,7 @@ namespace Models.DTOs
         public string? Alias { get; set; }
         public string? Rol { get; set; }
         public string? Clave { get; set; }
+        public string? JwtToken { get; set; }
     }
 
 }

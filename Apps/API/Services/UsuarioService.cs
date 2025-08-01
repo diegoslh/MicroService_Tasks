@@ -1,9 +1,12 @@
-﻿using Models.DTOs;
+﻿using Microsoft.IdentityModel.Tokens;
+using Models.DTOs;
 using Repository.Interfaces;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +32,10 @@ namespace Services
             var encryptedPassword = EncryptSHA256(clave);
             var usuario = usuarios.FirstOrDefault(u => u.Clave == encryptedPassword);
 
+            // Generar Token
+            var token = GenerarJWT(usuario.Alias);
+            usuario.JwtToken = token;
+
             return usuario; // Será null si la clave no coincide
 
         }
@@ -49,6 +56,29 @@ namespace Services
 
                 return builder.ToString();
             }
+        }
+
+        private string GenerarJWT(string usuario)
+        {
+            //crear la informacion del usuario para token
+            var userClaims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, usuario),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            //var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:key"]!)); // TODO Error al importar IConfiguration
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("420F64E3-BBF1-4EB0-83E8-1312CFFFF9E4"));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+
+            //crear detalle del token
+            var jwtConfig = new JwtSecurityToken(
+                claims: userClaims,
+                expires: DateTime.UtcNow.AddHours(5),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(jwtConfig);
         }
     }
 }

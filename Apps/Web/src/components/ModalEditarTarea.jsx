@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { API_URL } from "../../config.js";
 import EditIcon from "../assets/icons/modify.png";
 
-
 function ModalEditarTarea({ tarea, onUpdated }) {
+  const token = localStorage.getItem("JWT_TOKEN");
   const [formData, setFormData] = useState({
     titulo: "",
     descripcion: null,
@@ -28,14 +28,18 @@ function ModalEditarTarea({ tarea, onUpdated }) {
         estadoTareaFk: tarea.estadoTareaFk || "",
       });
 
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      };
       // Cargar colaboradores
-      fetch(`${API_URL}/Usuario/Colaboradores`)
+      fetch(`${API_URL}/Usuario/Colaboradores`, { headers })
         .then((res) => res.json())
         .then(setColaboradores)
         .catch((err) => console.error("Error cargando colaboradores", err));
 
       // Cargar estados
-      fetch(`${API_URL}/EstadosTarea`)
+      fetch(`${API_URL}/EstadosTarea`, { headers })
         .then((res) => res.json())
         .then(setEstados)
         .catch((err) => console.error("Error cargando estados", err));
@@ -60,21 +64,24 @@ function ModalEditarTarea({ tarea, onUpdated }) {
       fechaLimite: new Date(formData.fechaLimite).toISOString(),
       colaboradorFk: parseInt(formData.colaboradorFk),
       estadoTareaFk: parseInt(formData.estadoTareaFk),
-      estado: tarea.estado,
+      estado: tarea.estadoRegistro === "Activa" ? true : false,
     };
-
+    console.log("Payload para actualizar tarea:", payload);
     try {
       const res = await fetch(`${API_URL}/Tarea/${tarea.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
         const errorText = await res.text();
-        console.error("Error al crear la tarea:", errorText);
+        console.error("Error al actualizar la tarea:", errorText);
         throw new Error(
-          JSON.parse(errorText).mensaje || "Error al crear la tarea"
+          JSON.parse(errorText).mensaje || "Error al actualizar la tarea"
         );
       }
 
@@ -94,6 +101,7 @@ function ModalEditarTarea({ tarea, onUpdated }) {
         data-bs-toggle="modal"
         data-bs-target={`#${modalId}`}
         title="Editar Registro"
+        disabled={!token}
       >
         <img src={EditIcon} alt="Editar" width="20" height="20" />
       </button>
@@ -206,6 +214,26 @@ function ModalEditarTarea({ tarea, onUpdated }) {
                   ))}
                 </select>
               </div>
+
+              {/* <div className="mb-3">
+                <label className="form-label">
+                  Estado Registro <code>*</code>
+                </label>
+                <select
+                  name="estadoFk"
+                  className="form-select"
+                  value={formData.estadoRegistro}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="1">
+                    Activa
+                  </option>
+                  <option value="0">
+                    Inactiva
+                  </option>
+                </select>
+              </div> */}
             </section>
 
             <footer className="modal-footer">
