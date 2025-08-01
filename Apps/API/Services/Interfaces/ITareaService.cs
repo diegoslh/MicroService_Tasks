@@ -12,5 +12,6 @@ namespace Services.Interfaces
     {
         Task<IEnumerable<TareaDto>> ObtenerTareas(bool fullPayload, bool? estado);
         Task CrearTareaAsync(TblTarea nuevaTarea);
+        Task<bool> ActualizarTareaAsync(int id, TblTarea tareaActualizada);
     }
 }

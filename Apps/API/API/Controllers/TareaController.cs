@@ -48,5 +48,30 @@ namespace API.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> ActualizarTarea(int id, [FromBody] TblTarea tareaActualizada)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var actualizada = await tareaService.ActualizarTareaAsync(id, tareaActualizada);
+
+                if (!actualizada)
+                    return NotFound(new { mensaje = $"No se encontró ninguna tarea con ID {id}." });
+
+                return Ok(new { mensaje = "Tarea actualizada correctamente." });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return ErrorHelper.BuildInternalError(ex, "✖️ Error interno al actualizar la tarea.", HttpContext);
+            }
+        }
+
     }
 }

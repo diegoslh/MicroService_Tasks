@@ -38,24 +38,49 @@ namespace Services
 
         public async Task CrearTareaAsync(TblTarea nuevaTarea)
         {
-            // Validaciones lógicas adicionales a las que tiene el Modelo TblTarea
-            if (string.IsNullOrWhiteSpace(nuevaTarea.Titulo))
-                throw new ArgumentException("El título no puede estar vacío.");
+            // Validaciones adicionales
+            ValidarCamposTblTarea(nuevaTarea);
 
-            if (nuevaTarea.FechaCreacion < DateTime.Now)
-                throw new ArgumentException("La fecha de creación no puede ser menor al día actual.");
-
-            if (nuevaTarea.FechaLimite.Date <= nuevaTarea.FechaCreacion.Date)
-                throw new ArgumentException("La fecha límite debe ser al menos un día después de la fecha de creación.");
-
-            if (nuevaTarea.ColaboradorFk <= 0)
-                throw new ArgumentException("ID de colaborador inválido.");
-
-            if (nuevaTarea.EstadoTareaFk <= 0)
-                throw new ArgumentException("ID de estado de tarea inválido.");
-
+            // Crear tarea
             await tareaRepository.CrearTareaAsync(nuevaTarea);
         }
 
+        public async Task<bool> ActualizarTareaAsync(int id, TblTarea tareaActualizada)
+        {
+            // Validaciones adicionales
+            ValidarCamposTblTarea(tareaActualizada);
+
+            // Confirmar existencia
+            var existe = await tareaRepository.ExisteTareaAsync(id);
+            if (!existe)
+                return false;
+
+            // Asegurar ID correcto y procesar actualización
+            tareaActualizada.IdTareaPk = id;
+            await tareaRepository.ActualizarTareaAsync(tareaActualizada);
+
+            return true;
+        }
+
+        #region Private Methods
+        private static void ValidarCamposTblTarea(TblTarea tarea)
+        {
+            // Validaciones adicionales a las que tiene el Modelo TblTarea
+            if (string.IsNullOrWhiteSpace(tarea.Titulo))
+                throw new ArgumentException("El título no puede estar vacío.");
+
+            if (tarea.FechaCreacion < DateTime.Now)
+                throw new ArgumentException("La fecha de creación no puede ser menor al día actual.");
+
+            if (tarea.FechaLimite.Date <= tarea.FechaCreacion.Date)
+                throw new ArgumentException("La fecha límite debe ser al menos un día después de la fecha de creación.");
+
+            if (tarea.ColaboradorFk <= 0)
+                throw new ArgumentException("ID de colaborador inválido.");
+
+            if (tarea.EstadoTareaFk <= 0)
+                throw new ArgumentException("ID de estado de tarea inválido.");
+        }
+        #endregion
     }
 }

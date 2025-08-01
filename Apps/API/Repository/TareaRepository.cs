@@ -11,7 +11,7 @@ namespace Repository
 {
     public class TareaRepository(ISqlServerConnection connection) : ITareaRepository
     {
-        public async Task<IEnumerable<TareaDto>> ObtenerFullPayloadTareas(Dictionary<string, object?> parameters)
+        public async Task<IEnumerable<TareaDto>> ObtenerFullPayloadTareas(Dictionary<string, object?> parametros)
         {
             var query = @"
                 SELECT 
@@ -40,7 +40,7 @@ namespace Repository
                 ORDER BY t.tar_fechaLimite ASC;
             ";
 
-            return await connection.ExecuteQuerySqlServerDb<TareaDto>(query, parameters);
+            return await connection.ExecuteQuerySqlServerDb<TareaDto>(query, parametros);
         }
 
         public async Task<IEnumerable<TareaDto>> ObtenerTareasActivas()
@@ -103,10 +103,54 @@ namespace Repository
 
         }
 
-        public Task<bool> ActualizarTarea(TareaDto tarea)
+        public async Task<bool> ExisteTareaAsync(int id)
         {
-            throw new NotImplementedException();
+            var query = @"
+                SELECT COUNT(1) AS CountValue
+                FROM Tc_TblTarea 
+                WHERE tar_idTareaPk = @Id
+            ";
+
+            var parametros = new Dictionary<string, object>
+            {
+                { "@Id", id }
+            };
+
+            var resultado = await connection.ExecuteQuerySqlServerDb<CountDto>(query, parametros);
+            //return Convert.ToInt32(resultado) > 0;
+            return resultado?.FirstOrDefault()?.CountValue > 0;
         }
+
+        public async Task ActualizarTareaAsync(TblTarea tarea)
+        {
+            var query = @"
+                UPDATE Tc_TblTarea
+                SET 
+                    tar_titulo = @Titulo,
+                    tar_descripcion = @Descripcion,
+                    tar_fechaCreacion = @FechaCreacion,
+                    tar_fechaLimite = @FechaLimite,
+                    tar_colaboradorFk = @ColaboradorFk,
+                    tar_estadoFk = @EstadoTareaFk,
+                    tar_estado = @Estado
+                WHERE tar_idTareaPk = @IdTareaPk
+            ";
+
+            var parametros = new Dictionary<string, object?>
+            {
+                { "@IdTareaPk", tarea.IdTareaPk },
+                { "@Titulo", tarea.Titulo },
+                { "@Descripcion", tarea.Descripcion ?? (object)DBNull.Value },
+                { "@FechaCreacion", tarea.FechaCreacion },
+                { "@FechaLimite", tarea.FechaLimite },
+                { "@ColaboradorFk", tarea.ColaboradorFk },
+                { "@EstadoTareaFk", tarea.EstadoTareaFk },
+                { "@Estado", tarea.Estado }
+            };
+
+            await connection.ExecuteNonQuerySqlServerDb(query, parametros);
+        }
+
 
         public Task<bool> InhabilitarTarea(int id)
         {

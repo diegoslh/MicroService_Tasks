@@ -11,9 +11,10 @@ namespace Repository.Interfaces
     public interface ITareaRepository
     {
         Task<IEnumerable<TareaDto>> ObtenerTareasActivas();
-        Task<IEnumerable<TareaDto>> ObtenerFullPayloadTareas(Dictionary<string, object?> parameters);
+        Task<IEnumerable<TareaDto>> ObtenerFullPayloadTareas(Dictionary<string, object?> parametros);
         Task CrearTareaAsync(TblTarea tarea);
-        Task<bool> ActualizarTarea(TareaDto tarea);
+        Task<bool> ExisteTareaAsync(int id);
+        Task ActualizarTareaAsync(TblTarea tarea);
         Task<bool> InhabilitarTarea(int id);
     }
 }
