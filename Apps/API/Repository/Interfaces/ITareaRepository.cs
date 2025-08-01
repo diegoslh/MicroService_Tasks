@@ -15,6 +15,7 @@ namespace Repository.Interfaces
         Task CrearTareaAsync(TblTarea tarea);
         Task<bool> ExisteTareaAsync(int id);
         Task ActualizarTareaAsync(TblTarea tarea);
-        Task<bool> InhabilitarTarea(int id);
+        Task ActualizarEstadoTareaAsync(int id, bool estado);
+        Task EliminarTareaAsync(int id);
     }
 }

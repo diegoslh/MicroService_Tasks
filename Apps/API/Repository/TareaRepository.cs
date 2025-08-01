@@ -152,9 +152,37 @@ namespace Repository
         }
 
 
-        public Task<bool> InhabilitarTarea(int id)
+        public async Task ActualizarEstadoTareaAsync(int id, bool estado)
         {
-            throw new NotImplementedException();
+            var query = @"
+                UPDATE Tc_TblTarea
+                SET tar_estado = @Estado
+                WHERE tar_idTareaPk = @Id
+            ";
+
+            var parametros = new Dictionary<string, object>
+            {
+                { "@Id", id },
+                { "@Estado", estado }
+            };
+
+            await connection.ExecuteNonQuerySqlServerDb(query, parametros);
         }
+
+        public async Task EliminarTareaAsync(int id)
+        {
+            var query = @"
+                DELETE FROM Tc_TblTarea
+                WHERE tar_idTareaPk = @Id
+            ";
+
+            var parametros = new Dictionary<string, object>
+            {
+                { "@Id", id }
+            };
+
+            await connection.ExecuteNonQuerySqlServerDb(query, parametros);
+        }
+
     }
 }

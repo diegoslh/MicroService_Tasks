@@ -62,6 +62,29 @@ namespace Services
             return true;
         }
 
+        public async Task<bool> CambiarEstadoTareaAsync(int id, bool nuevoEstado)
+        {
+            // Confirmar existencia
+            var existe = await tareaRepository.ExisteTareaAsync(id);
+            if (!existe)
+                return false;
+
+            // Actualizar estado de la tarea
+            await tareaRepository.ActualizarEstadoTareaAsync(id, nuevoEstado);
+            return true;
+        }
+
+        public async Task<bool> EliminarTareaAsync(int id)
+        {
+            var existe = await tareaRepository.ExisteTareaAsync(id);
+            if (!existe)
+                return false;
+
+            await tareaRepository.EliminarTareaAsync(id);
+            return true;
+        }
+
+
         #region Private Methods
         private static void ValidarCamposTblTarea(TblTarea tarea)
         {

@@ -13,5 +13,7 @@ namespace Services.Interfaces
         Task<IEnumerable<TareaDto>> ObtenerTareas(bool fullPayload, bool? estado);
         Task CrearTareaAsync(TblTarea nuevaTarea);
         Task<bool> ActualizarTareaAsync(int id, TblTarea tareaActualizada);
+        Task<bool> CambiarEstadoTareaAsync(int id, bool nuevoEstado);
+        Task<bool> EliminarTareaAsync(int id);
     }
 }

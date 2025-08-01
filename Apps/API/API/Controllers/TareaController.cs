@@ -73,5 +73,41 @@ namespace API.Controllers
             }
         }
 
+        [HttpPatch("{id}/estado")]
+        public async Task<IActionResult> CambiarEstado(int id, [FromBody] bool nuevoEstado)
+        {
+            try
+            {
+                var actualizado = await tareaService.CambiarEstadoTareaAsync(id, nuevoEstado);
+
+                if (!actualizado)
+                    return NotFound(new { mensaje = $"No se encontró la tarea con ID {id}." });
+
+                return Ok(new { mensaje = $"El estado de la tarea fue actualizado a {(nuevoEstado ? "Activa" : "Inactiva")}." });
+            }
+            catch (Exception ex)
+            {
+                return ErrorHelper.BuildInternalError(ex, "✖️ Ocurrió un error al actualizar el estado.", HttpContext);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> EliminarTarea(int id)
+        {
+            try
+            {
+                var eliminada = await tareaService.EliminarTareaAsync(id);
+
+                if (!eliminada)
+                    return NotFound(new { mensaje = $"No se encontró la tarea con ID {id}." });
+
+                return Ok(new { mensaje = $"La tarea con ID {id} fue eliminada correctamente." });
+
+            }
+            catch (Exception ex)
+            {
+                return ErrorHelper.BuildInternalError(ex, "✖️ Error interno al intentar eliminar la tarea.", HttpContext);
+            }
+        }
     }
 }
