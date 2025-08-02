@@ -66,3 +66,24 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.modal-title {
+  font-weight: 600;
+}
+
+.bg-urgente {
+  background-color: #e7b2d1;
+  color: #7c3a61;
+}
+.bg-vencida  {
+  background-color: #f1d09e;
+  color: #7c4d00;
+}
+.bg-normal {
+  background-color: #a2dbca;
+  color: #1d654f;
+}
+/* .bg-vencida {
+  background-color: #e9ecf6;
+  color: #656c73; 
+} */

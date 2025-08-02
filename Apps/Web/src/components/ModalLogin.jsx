@@ -57,21 +57,21 @@ function ModalLogin() {
   return (
     <>
       <button
-        className="button_auth"
+        className="btn btn-outline-dark border-2"
         type="button"
         data-bs-toggle="modal"
         data-bs-target="#loginModal">
-        <span>Login</span>
+        <span style={{ fontWeight: 600 }}>Iniciar Sesión</span>
       </button>
 
       <article className="modal" tabIndex="-1" id="loginModal">
-        <div className="modal-dialog modal-dialog-centered modal-sm">
-          <form className="modal-content" onSubmit={handleSubmit}>
-            <header className="modal-header border-0">
-              <h4 className="modal-title w-100 text-center">Bienvenido</h4>
+        <div className="modal-dialog modal-dialog-centered modal-md">
+          <form className="modal-content py-4 px-2" onSubmit={handleSubmit}>
+            <header className="modal-header border-0 pb-1 ">
+              <h3 className="modal-title w-100 text-center text-muted" style={{ fontWeight: 600 }}>Iniciar Sesión</h3>
             </header>
 
-            <section className="modal-body">
+            <section className="modal-body my-0 mx-4">
               <div className="form-floating mb-3">
                 <input
                   type="text"
@@ -101,7 +101,7 @@ function ModalLogin() {
             <code className=" text-center">Credenciales en database.sql</code>
 
             <footer className="modal-footer border-0">
-              <button type="submit" className="btn btn-outline-success mx-auto">
+              <button type="submit" className="btn btn-outline-primary mx-auto px-5 py-2">
                 Iniciar Sesión
               </button>
             </footer>

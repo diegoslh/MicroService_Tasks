@@ -71,7 +71,7 @@ function ModalEditarTarea({ tarea, onUpdated }) {
       const res = await fetch(`${API_URL}/Tarea/${tarea.id}`, {
         method: "PUT",
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
@@ -86,7 +86,8 @@ function ModalEditarTarea({ tarea, onUpdated }) {
       }
 
       alert("✅ ¡Tarea actualizada!");
-      document.getElementById(modalId).querySelector("form").reset();
+      // document.getElementById(modalId).querySelector("form").reset();
+      window.location.reload();
       if (onUpdated) onUpdated();
     } catch (error) {
       console.error(error);
@@ -97,7 +98,7 @@ function ModalEditarTarea({ tarea, onUpdated }) {
   return (
     <>
       <button
-        className="btn btn-success-outline"
+        className="btn btn-outline-light"
         data-bs-toggle="modal"
         data-bs-target={`#${modalId}`}
         title="Editar Registro"
@@ -107,10 +108,12 @@ function ModalEditarTarea({ tarea, onUpdated }) {
       </button>
 
       <article className="modal fade" id={modalId} tabIndex="-1">
-        <div className="modal-dialog">
+        <div className="modal-dialog p-0 rounded">
           <form className="modal-content" onSubmit={handleSubmit}>
             <header className="modal-header">
-              <h4 className="modal-title w-100 text-center">Editar Tarea</h4>
+              <h4 className="modal-title w-100 text-center text-muted">
+                Editar Tarea
+              </h4>
             </header>
 
             <section className="modal-body">
@@ -214,26 +217,6 @@ function ModalEditarTarea({ tarea, onUpdated }) {
                   ))}
                 </select>
               </div>
-
-              {/* <div className="mb-3">
-                <label className="form-label">
-                  Estado Registro <code>*</code>
-                </label>
-                <select
-                  name="estadoFk"
-                  className="form-select"
-                  value={formData.estadoRegistro}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="1">
-                    Activa
-                  </option>
-                  <option value="0">
-                    Inactiva
-                  </option>
-                </select>
-              </div> */}
             </section>
 
             <footer className="modal-footer">
@@ -244,7 +227,7 @@ function ModalEditarTarea({ tarea, onUpdated }) {
               >
                 Cancelar
               </button>
-              <button type="submit" className="btn btn-success">
+              <button type="submit" className="btn btn-primary">
                 Actualizar
               </button>
             </footer>

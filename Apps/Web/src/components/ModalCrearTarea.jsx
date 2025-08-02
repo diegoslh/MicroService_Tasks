@@ -104,21 +104,21 @@ function ModalCrearTarea({ idModal, onUpdated }) {
   return (
     <>
       <button
-        className="btn btn-primary me-3"
+        className="btn btn-outline-primary"
         type="button"
         data-bs-toggle="modal"
         data-bs-target={`#${idModal}`}
         onClick={cargarDatosModal}
         disabled={!token}
       >
-        <h5 className="mb-0">Agregar Tarea</h5>
+        <span>Crear Tarea</span>
       </button>
 
       <article className="modal fade" tabIndex="-1" id={idModal}>
         <div className="modal-dialog">
           <form className="modal-content" onSubmit={handleSubmit}>
             <header className="modal-header">
-              <h4 className="modal-title w-100 text-center">Agregar Tarea</h4>
+              <h4 className="modal-title w-100 text-center text-muted">Crear Tarea</h4>
             </header>
 
             <section className="modal-body">
@@ -213,7 +213,7 @@ function ModalCrearTarea({ idModal, onUpdated }) {
               </button>
               <button
                 type="submit"
-                className="btn btn-success"
+                className="btn btn-primary"
                 disabled={!estadoCargado}
               >
                 Crear Tarea

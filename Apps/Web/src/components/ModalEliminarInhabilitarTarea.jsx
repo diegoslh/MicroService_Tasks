@@ -56,17 +56,8 @@ function ModalEliminarInhabilitarTarea({ tareaId, onUpdated }) {
     <article className="modal fade" id={modalId} tabIndex="-1">
       <div className="modal-dialog">
         <div className="modal-content">
-          <header className="modal-header">
-            <h5 className="modal-title">Confirmar acción</h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </header>
           <div className="modal-body text-center">
-            <p>
+            <p className="fs-5">
               ¿Qué deseas hacer con la tarea <strong>ID #{tareaId}</strong>?
             </p>
             <p className="text-danger">⚠ Esta acción no se puede deshacer</p>
@@ -74,7 +65,7 @@ function ModalEliminarInhabilitarTarea({ tareaId, onUpdated }) {
           <footer className="modal-footer">
             <button
               type="button"
-              className="btn btn-secondary"
+              className="btn btn-light"
               data-bs-dismiss="modal"
             >
               Cancelar

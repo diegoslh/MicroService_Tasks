@@ -42,6 +42,7 @@ builder.Services.AddSwaggerGen(options =>
 
 // Configure the connection string for SQL Server
 var connectionString = builder.Configuration.GetConnectionString("DockerConnection");
+//var connectionString = builder.Configuration.GetConnectionString("LocalConnection");
 builder.Services.AddScoped<ISqlServerConnection>(provider =>
     new SqlServerConnection(connectionString!)
 );
