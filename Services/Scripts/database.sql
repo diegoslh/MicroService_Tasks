@@ -59,12 +59,13 @@ CREATE TABLE Tc_TblTarea (
 -- Tabla: Usuarios del sistema
 -- Esta tabla almacena los usuarios que pueden ingresar al sistema
 CREATE TABLE Tc_TblUsuario (
-    us_idUsuarioPkFK INT IDENTITY(1,1),
+    us_idUsuarioPkFK INT NOT NULL,
     us_alias NVARCHAR(10) NOT NULL,
     us_contrasena NVARCHAR(100) NOT NULL,
     us_rolFk INT NOT NULL,
     us_estado BIT NOT NULL DEFAULT 1,
     PRIMARY KEY (us_idUsuarioPkFK),
+    FOREIGN KEY (us_idUsuarioPkFK) REFERENCES Tc_TblColaborador(col_idColaboradorPk),
     FOREIGN KEY (us_rolFk) REFERENCES Tc_TblDicRol(rol_idRolPk)
 );
 
@@ -94,9 +95,10 @@ VALUES
     ('Manuel Narvaez', 'manuel.narvaez@example.com', 1);
 
 -- Insertar datos iniciales en la tabla de usuarios
-INSERT INTO Tc_TblUsuario (us_alias, us_contrasena, us_rolFk, us_estado) 
+INSERT INTO Tc_TblUsuario (us_idUsuarioPkFK, us_alias, us_contrasena, us_rolFk, us_estado)
 VALUES
     (
+        (SELECT TOP 1 col_idColaboradorPk FROM Tc_TblColaborador),
         'admin', 
         '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', -- admin123
         (SELECT rol_idRolPk FROM Tc_TblDicRol WHERE rol_nombreRol = 'Administrador'), 
@@ -107,8 +109,8 @@ VALUES
 INSERT INTO Tc_TblTarea (tar_titulo, tar_descripcion, tar_fechaLimite, tar_colaboradorFk, tar_estadoFk, tar_estado)
 VALUES
     (
-        'Enviar solicitud de requerimientos papelería',
-        'Solicitar a los colaboradores la lista de papelería necesaria para el próximo mes',
+        'Enviar solicitud de requerimientos papelerï¿½a',
+        'Solicitar a los colaboradores la lista de papelerï¿½a necesaria para el prï¿½ximo mes',
         '2025-08-15',
         (SELECT col_idColaboradorPk FROM Tc_TblColaborador WHERE col_nombre = 'Sharit Bedoya'),
         (SELECT est_idEstadoPk FROM Tc_TblDicEstadoTarea WHERE est_nombre = 'Pendiente'),
@@ -124,7 +126,7 @@ VALUES
     ),
     (
         'Finalizar informe de ventas',
-        'Elaborar el informe de ventas del segundo trimestre del año 2025',
+        'Elaborar el informe de ventas del segundo trimestre del aï¿½o 2025',
         '2025-07-30',
         (SELECT col_idColaboradorPk FROM Tc_TblColaborador WHERE col_nombre = 'Manuel Narvaez'),
         (SELECT est_idEstadoPk FROM Tc_TblDicEstadoTarea WHERE est_nombre = 'Completada'),

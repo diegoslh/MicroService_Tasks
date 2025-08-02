@@ -42,7 +42,7 @@ Antes de comenzar, asegúrate de tener configurado en tu sistema:
 
    ```bash
    git clone https://github.com/diegoslh/MicroService_Tasks.git
-   cd MicroServicio_TareasColaboradores
+   cd MicroService_Tasks
    ```
 
 2. 🐳 Ejecutar con Docker Compose:
@@ -67,27 +67,11 @@ Antes de comenzar, asegúrate de tener configurado en tu sistema:
 > Para que la aplicación funcione correctamente, debes ejecutar el script `database.sql` que se encuentra en la ruta:
 > `Services/Scripts/database.sql`
 
-Tienes **dos opciones** para hacerlo:
+Puedes hacerlo de la siguiente manera:
 
 ---
 
-#### 🅰️ Opción 1: Ejecutar el script directamente dentro del contenedor
-
-1. Abre una terminal y accede al contenedor de SQL Server:
-
-```bash
-docker exec -it BdTareasColaborador /bin/bash
-```
-
-2. Una vez dentro, ejecuta el siguiente comando para correr el script:
-
-```bash
-/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "Temporal1**" -i /app/Services/Scripts/database.sql
-```
-
----
-
-#### 🅱️ Opción 2: Conectarte desde un cliente externo como **SSMS**, **Azure Data Studio** o **DataGrip**
+#### 🅰️ Conectarte desde un cliente externo como **SSMS**, **Azure Data Studio** o **DataGrip**
 
 Puedes conectarte al contenedor de SQL Server como si fuera una instancia remota usando los siguientes datos:
 
